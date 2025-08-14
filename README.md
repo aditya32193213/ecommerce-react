@@ -25,7 +25,7 @@ React • Redux Toolkit • Tailwind CSS • React Router • Jest • Lucide Ic
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ecommerce-react.git
+git clone https://github.com/aditya32193213/ecommerce-react.git
 cd ecommerce-react
 npm install
 npm start
