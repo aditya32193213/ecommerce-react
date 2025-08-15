@@ -6,7 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import useDebounce from "../hooks/useDebounce";
 import ClipLoader from "react-spinners/ClipLoader";
-import WhatWeBelieve from "../components/WhatWeBelieve";
+import WhatWeBelieve from "../components/sections/whatwebelieve";
 
 const Home = () => {
   const [products, setProducts] = useState([]);

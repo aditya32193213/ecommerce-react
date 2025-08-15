@@ -1,5 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
-import WhatWeBelieve from "../../components/WhatWeBelieve";
+import WhatWeBelieve from "../../components/sections/whatwebelieve";
 
 describe("WhatWeBelieve Component", () => {
   test("renders section container", () => {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
-import upi from "../assets/paymentLogo/upi.png";
-import mastercard from "../assets/paymentLogo/mastercard.png";
-import paypal from "../assets/paymentLogo/paypal.png";
-import visa from "../assets/paymentLogo/visa.png";
-import logo from "../assets/Logo/logo.png";
+import upi from "../../assets/paymentLogo/upi.png";
+import mastercard from "../../assets/paymentLogo/mastercard.png";
+import paypal from "../../assets/paymentLogo/paypal.png";
+import visa from "../../assets/paymentLogo/visa.png";
+import logo from "../../assets/logo/logo.png";
 
 const Footer = () => {
   return (

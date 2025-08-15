@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Banner from '../../components/banner';
+import Banner from '../../components/sections/banner';
 
 // 🧪 Mock BackButton since we only test Banner here
 jest.mock('../../components/Backbutton', () => () => <div data-testid="mock-back-button" />);

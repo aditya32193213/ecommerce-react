@@ -23,10 +23,10 @@ jest.mock("react-toastify", () => ({
 }));
 
 // Mock child components to isolate the App component logic
-jest.mock("./components/Navbar", () => () => <div data-testid="navbar" />);
-jest.mock("./components/Footer", () => () => <div data-testid="footer" />);
-jest.mock("./components/Banner", () => () => <div data-testid="banner" />);
-jest.mock("./components/ProtectedRoute", () => ({ children }) => children);
+jest.mock("./components/layout/Navbar", () => () => <div data-testid="navbar" />);
+jest.mock("./components/layout/Footer", () => () => <div data-testid="footer" />);
+jest.mock("./components/sections/banner", () => () => <div data-testid="banner" />);
+jest.mock("./components/Common/ProtectedRoute", () => ({ children }) => children);
 jest.mock("./pages/Home", () => () => <div data-testid="home-page" />);
 jest.mock("./pages/ProductDetails", () => () => (
   <div data-testid="product-details-page" />

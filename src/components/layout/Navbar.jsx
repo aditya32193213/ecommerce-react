@@ -10,9 +10,9 @@ import {
 } from "react-icons/fa";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearchQuery } from "../redux/slices/searchSlice";
-import { logout } from "../redux/slices/authSlice";
-import logo from "../assets/Logo/logo.png";
+import { setSearchQuery } from "../../redux/slices/searchSlice";
+import { logout } from "../../redux/slices/authSlice";
+import logo from "../../assets/logo/logo.png";
 
 const Navbar = () => {
   const [localQuery, setLocalQuery] = useState("");

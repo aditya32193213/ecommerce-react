@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../redux/slices/authSlice";
-import background from "../assets/LoginPage.jpg";
+import background from "../assets/banner/loginpagebanner.jpg";
 
 const Login = () => {
   const dispatch = useDispatch();
