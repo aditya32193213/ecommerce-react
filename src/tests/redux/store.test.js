@@ -1,4 +1,3 @@
-// src/redux/store.test.js
 import { configureStore } from "@reduxjs/toolkit";
 import wishlistReducer, {
   addToWishlist,

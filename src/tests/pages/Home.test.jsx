@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import Home from "../../pages/Home";
 import { BrowserRouter } from "react-router-dom";

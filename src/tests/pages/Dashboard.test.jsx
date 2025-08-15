@@ -1,5 +1,3 @@
-// __tests__/Dashboard.test.jsx
-import React from "react";
 import { render, screen } from "@testing-library/react";
 import Dashboard from "../../pages/Dashboard";
 import { BrowserRouter } from "react-router-dom";

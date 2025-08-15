@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Cart from "../../pages/Cart";
 import { Provider } from "react-redux";

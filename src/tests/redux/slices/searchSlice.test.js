@@ -1,4 +1,3 @@
-// src/redux/slices/searchSlice.test.js
 import searchReducer, {
   setSearchQuery,
   clearSearchQuery,

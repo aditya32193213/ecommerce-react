@@ -1,13 +1,8 @@
-import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import App from "../App";
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
-import Banner from "../components/sections/banner";
 import AOS from "aos";
 
 // --- MOCK THIRD-PARTY LIBRARIES ---

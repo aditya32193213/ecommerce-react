@@ -1,4 +1,3 @@
-// src/redux/slices/productSlice.test.js
 import reducer, { fetchProductById, clearProduct } from "../../../redux/slices/productSlice";
 
 describe("productSlice", () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Wishlist from '../../pages/Wishlist';
 import { Provider } from 'react-redux';

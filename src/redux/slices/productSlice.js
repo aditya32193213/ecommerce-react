@@ -1,17 +1,3 @@
-// // src/redux/slices/productSlice.js
-
-// import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-// export const fetchProductById = createAsyncThunk(
-//   "product/fetchById",
-//   async (id) => {
-//     const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-//     return response.json();
-//   }
-// );
-
-// // rest of your slice...
-// src/redux/slices/productSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // ✅ Async thunk to fetch a single product by ID
