@@ -184,7 +184,7 @@ import AOS from "aos";
 import { useEffect } from "react";
 import "aos/dist/aos.css";
 import routes from "./routes";
-import ProtectedRoute from "./components/Common/ProtectedRoute";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
   useEffect(() => {

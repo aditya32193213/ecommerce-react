@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import Banner from '../../components/sections/banner';
 
 // 🧪 Mock BackButton since we only test Banner here
-jest.mock('../../components/Backbutton', () => () => <div data-testid="mock-back-button" />);
+jest.mock('../../components/common/Backbutton', () => () => <div data-testid="mock-back-button" />);
 
 describe('Banner Component', () => {
   it('renders the banner wrapper', () => {
@@ -31,3 +31,9 @@ describe('Banner Component', () => {
     expect(backBtn).toBeInTheDocument();
   });
 });
+
+
+
+
+
+

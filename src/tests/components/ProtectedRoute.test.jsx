@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import ProtectedRoute from "../../components/Common/ProtectedRoute";
+import ProtectedRoute from "../../components/common/ProtectedRoute";
 
 const mockStore = configureStore([]);
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import BackButton from "../../components/Common/BackButton";
+import BackButton from "../../components/common/BackButton";
 
 // 🧪 Correctly mock react-router-dom for ES modules
 jest.mock("react-router-dom", () => {

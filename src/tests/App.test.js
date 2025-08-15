@@ -5,9 +5,9 @@ import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import App from "../App";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import Banner from "../components/banner";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
+import Banner from "../components/sections/banner";
 import AOS from "aos";
 
 // --- MOCK THIRD-PARTY LIBRARIES ---
@@ -23,20 +23,20 @@ jest.mock("react-toastify", () => ({
 }));
 
 // Mock child components to isolate the App component logic
-jest.mock("./components/layout/Navbar", () => () => <div data-testid="navbar" />);
-jest.mock("./components/layout/Footer", () => () => <div data-testid="footer" />);
-jest.mock("./components/sections/banner", () => () => <div data-testid="banner" />);
-jest.mock("./components/Common/ProtectedRoute", () => ({ children }) => children);
-jest.mock("./pages/Home", () => () => <div data-testid="home-page" />);
-jest.mock("./pages/ProductDetails", () => () => (
+jest.mock("../components/layout/Navbar", () => () => <div data-testid="navbar" />);
+jest.mock("../components/layout/Footer", () => () => <div data-testid="footer" />);
+jest.mock("../components/sections/banner", () => () => <div data-testid="banner" />);
+jest.mock("../components/Common/ProtectedRoute", () => ({ children }) => children);
+jest.mock("../pages/Home", () => () => <div data-testid="home-page" />);
+jest.mock("../pages/ProductDetails", () => () => (
   <div data-testid="product-details-page" />
 ));
-jest.mock("./pages/Cart", () => () => <div data-testid="cart-page" />);
-jest.mock("./pages/Wishlist", () => () => <div data-testid="wishlist-page" />);
-jest.mock("./pages/Login", () => () => <div data-testid="login-page" />);
-jest.mock("./pages/Dashboard", () => () => <div data-testid="dashboard-page" />);
-jest.mock("./pages/Checkout", () => () => <div data-testid="checkout-page" />);
-jest.mock("./pages/Thankyou", () => () => <div data-testid="thankyou-page" />);
+jest.mock("../pages/Cart", () => () => <div data-testid="cart-page" />);
+jest.mock("../pages/Wishlist", () => () => <div data-testid="wishlist-page" />);
+jest.mock("../pages/Login", () => () => <div data-testid="login-page" />);
+jest.mock("../pages/Dashboard", () => () => <div data-testid="dashboard-page" />);
+jest.mock("../pages/Checkout", () => () => <div data-testid="checkout-page" />);
+jest.mock("../pages/Thankyou", () => () => <div data-testid="thankyou-page" />);
 
 // --- HELPER FUNCTION FOR RENDERING ---
 

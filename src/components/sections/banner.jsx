@@ -1,6 +1,6 @@
 import React from 'react';
 import bannerImage from '../../assets/banner/banner.jpg';
-import BackButton from '../Common/BackButton';
+import BackButton from '../common/BackButton';
 
 const Banner = () => {
   return (
