@@ -37,10 +37,10 @@ npm start
 Here are some previews of the E-Commerce website:
 
 ### 🏠 Homepage
-![Homepage Screenshot](assets/homepage.png)
+![Homepage Screenshot](./assets/homepage.png)
 
 ### 🛒 Product Details Page
-![Product Page Screenshot](assets/product-page.png)
+![Product Page Screenshot](./assets/product-cart.png)
 
 ### 🛍️ Cart Page
-![Cart Page Screenshot](assets/cart-page.png)
+![Cart Page Screenshot](./assets/cart-page.png)
