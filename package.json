@@ -2,7 +2,7 @@
   "name": "ecomwebsite",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://aditya32193213.github.io/ecommerce-react",
+  "homepage": "https://aditya32193213.github.io/ecommerce-react/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "@testing-library/dom": "^10.4.0",
