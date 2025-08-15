@@ -29,10 +29,10 @@ Here are some previews of the E-Commerce website:
 ![Homepage Screenshot](./assets/homepage.png)
 
 ### 🛒 Product Details Page
-![Product Page Screenshot](./assets/product-cart.png)
+![Product Page Screenshot](./assets/product.png)
 
 ### 🛍️ Cart Page
-![Cart Page Screenshot](./assets/cart-page.png)
+![Cart Page Screenshot](./assets/shopping-cart.png)
 
 ## 🚀 Quick Start
 
