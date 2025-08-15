@@ -21,17 +21,6 @@ Designed for a smooth shopping experience with real-time search, category filter
 React • Redux Toolkit • Tailwind CSS • React Router • Jest • Lucide Icons
 
 ---
-
-## 🚀 Quick Start
-
-```bash
-git clone https://github.com/aditya32193213/ecommerce-react.git
-cd ecommerce-react
-npm install
-npm start
-
----
-
 ## 📸 Screenshots
 
 Here are some previews of the E-Commerce website:
@@ -44,3 +33,14 @@ Here are some previews of the E-Commerce website:
 
 ### 🛍️ Cart Page
 ![Cart Page Screenshot](./assets/cart-page.png)
+
+## 🚀 Quick Start
+
+```bash
+git clone https://github.com/aditya32193213/ecommerce-react.git
+cd ecommerce-react
+npm install
+npm start
+
+
+
