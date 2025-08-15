@@ -5,6 +5,13 @@ Designed for a smooth shopping experience with real-time search, category filter
 
 ---
 
+## 🌐 Live Demo
+
+- **Netlify Deployment:** [https://lively-truffle-50078c.netlify.app/](https://lively-truffle-50078c.netlify.app/)
+- **GitHub Pages Deployment:** [https://aditya32193213.github.io/ecommerce-react/](https://aditya32193213.github.io/ecommerce-react/)
+
+---
+
 ## ✨ Key Highlights
 
 - 📱 **Responsive UI** – Mobile-first design  
