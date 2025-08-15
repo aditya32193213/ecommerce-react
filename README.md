@@ -29,3 +29,18 @@ git clone https://github.com/aditya32193213/ecommerce-react.git
 cd ecommerce-react
 npm install
 npm start
+
+---
+
+## 📸 Screenshots
+
+Here are some previews of the E-Commerce website:
+
+### 🏠 Homepage
+![Homepage Screenshot](assets/homepage.png)
+
+### 🛒 Product Details Page
+![Product Page Screenshot](assets/product-page.png)
+
+### 🛍️ Cart Page
+![Cart Page Screenshot](assets/cart-page.png)
