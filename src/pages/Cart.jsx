@@ -1,3 +1,19 @@
+/**
+ * Cart Component
+ * ---------------
+ * File: Cart.jsx
+ * Purpose: Displays and manages the shopping cart, allowing users to
+ *          view, update, and checkout items.
+ *
+ * Features:
+ *  - Displays cart items with quantity controls and remove option
+ *  - Supports applying coupons (percentage, flat, or free shipping)
+ *  - Allows selection of shipping options (free, standard, express)
+ *  - Shows subtotal, discounts, shipping cost, and final total
+ *  - Checkout and continue shopping buttons for navigation
+ *  - Uses Redux for cart state management and React-Toastify for feedback
+ */
+
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { increaseQty, decreaseQty, removeFromCart } from "../redux/slices/cartSlice";
@@ -5,24 +21,29 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  // Get cart state from Redux store
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Local state for shipping, coupon, and discount handling
   const [shipping, setShipping] = useState("free");
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
 
+  // Calculate subtotal and shipping cost
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = shipping === "free" ? 0 : shipping === "standard" ? 10 : 20;
 
+  // Available coupon codes
   const coupons = {
-    SAVE10: 0.10,
-    FLAT50: 0.50,
-    FREESHIP: "freeshipping",
+    SAVE10: 0.10,      // 10% discount
+    FLAT50: 0.50,      // 50% discount
+    FREESHIP: "freeshipping", // Free shipping
   };
 
+  // Handle applying coupon
   const handleApplyCoupon = () => {
     const code = couponCode.toUpperCase();
     if (appliedCoupon) {
@@ -47,13 +68,16 @@ const Cart = () => {
     }
   };
 
+  // Calculate total (ensures no negative totals)
   const total = Math.max(subtotal + shippingCost - discount, 0);
 
+  // Increase item quantity
   const handleIncrease = (item) => {
     dispatch(increaseQty(item.id));
     toast.info("Increased quantity");
   };
 
+  // Decrease item quantity or remove if only 1 left
   const handleDecrease = (item) => {
     if (item.quantity > 1) {
       dispatch(decreaseQty(item.id));
@@ -64,11 +88,13 @@ const Cart = () => {
     }
   };
 
+  // Remove item from cart
   const handleRemove = (itemId) => {
     dispatch(removeFromCart(itemId));
     toast.error("Item removed from cart");
   };
 
+  // Proceed to checkout (only if cart has items)
   const handleCheckout = () => {
     if (cart.length === 0) {
       toast.warning("Cart is empty");
@@ -81,10 +107,15 @@ const Cart = () => {
     <div className="p-6 max-w-7xl mx-auto" data-testid="cart-page">
       <h2 className="text-3xl font-semibold mb-8">Shopping Cart</h2>
 
+      {/* Empty cart message */}
       {cart.length === 0 ? (
-        <p className="text-center text-gray-500" data-testid="empty-cart">Your cart is empty.</p>
+        <p className="text-center text-gray-500" data-testid="empty-cart">
+          Your cart is empty.
+        </p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Cart Items Section */}
           <div className="lg:col-span-2 space-y-4" data-testid="cart-items">
             {cart.map((item) => (
               <div
@@ -93,10 +124,15 @@ const Cart = () => {
                 data-testid={`cart-item-${item.id}`}
               >
                 <div className="flex gap-4 items-center">
+                  {/* Item Image */}
                   <img src={item.image} alt={item.title} className="w-20 h-20 object-contain" />
+                  
+                  {/* Item Details */}
                   <div>
                     <h3 className="font-semibold">{item.title}</h3>
                     <p className="text-sm text-gray-600 capitalize">{item.category}</p>
+
+                    {/* Quantity Controls */}
                     <div className="flex items-center mt-2 space-x-4">
                       <div className="flex items-center gap-2" data-testid={`quantity-controls-${item.id}`}>
                         <button
@@ -115,6 +151,8 @@ const Cart = () => {
                           +
                         </button>
                       </div>
+
+                      {/* Price Display */}
                       <p className="font-medium text-green-600">
                         ${item.price.toFixed(2)} x {item.quantity} ={" "}
                         <span className="font-semibold text-black">
@@ -125,6 +163,7 @@ const Cart = () => {
                   </div>
                 </div>
 
+                {/* Remove Button */}
                 <button
                   onClick={() => handleRemove(item.id)}
                   className="text-red-500 hover:underline mt-4 sm:mt-0"
@@ -135,6 +174,7 @@ const Cart = () => {
               </div>
             ))}
 
+            {/* Coupon Input */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
               <div className="flex w-full sm:max-w-md border rounded overflow-hidden" data-testid="coupon-section">
                 <input
@@ -156,13 +196,17 @@ const Cart = () => {
             </div>
           </div>
 
+          {/* Cart Summary Section */}
           <div className="bg-gray-50 p-6 rounded shadow h-fit" data-testid="cart-summary">
             <h3 className="text-xl font-semibold mb-4">Cart Total</h3>
+
+            {/* Subtotal */}
             <div className="flex justify-between border-b py-2">
               <span>Subtotal:</span>
               <span data-testid="subtotal">${subtotal.toFixed(2)}</span>
             </div>
 
+            {/* Discount Display */}
             {discount > 0 && (
               <div className="flex justify-between border-b py-2 text-green-600 font-medium" data-testid="discount">
                 <span>Discount ({appliedCoupon}):</span>
@@ -170,24 +214,48 @@ const Cart = () => {
               </div>
             )}
 
+            {/* Shipping Options */}
             <div className="py-4 border-b" data-testid="shipping-options">
               <p className="mb-2 font-medium">Shipping:</p>
               <label>
-                <input type="radio" name="shipping" value="free" checked={shipping === "free"} onChange={() => setShipping("free")} data-testid="ship-free" /> Free
+                <input
+                  type="radio"
+                  name="shipping"
+                  value="free"
+                  checked={shipping === "free"}
+                  onChange={() => setShipping("free")}
+                  data-testid="ship-free"
+                /> Free
               </label>
               <label>
-                <input type="radio" name="shipping" value="standard" checked={shipping === "standard"} onChange={() => setShipping("standard")} data-testid="ship-standard" /> Standard
+                <input
+                  type="radio"
+                  name="shipping"
+                  value="standard"
+                  checked={shipping === "standard"}
+                  onChange={() => setShipping("standard")}
+                  data-testid="ship-standard"
+                /> Standard
               </label>
               <label>
-                <input type="radio" name="shipping" value="express" checked={shipping === "express"} onChange={() => setShipping("express")} data-testid="ship-express" /> Express
+                <input
+                  type="radio"
+                  name="shipping"
+                  value="express"
+                  checked={shipping === "express"}
+                  onChange={() => setShipping("express")}
+                  data-testid="ship-express"
+                /> Express
               </label>
             </div>
 
+            {/* Final Total */}
             <div className="flex justify-between mt-6 text-lg font-bold">
               <span>Total:</span>
               <span className="text-orange-600" data-testid="total">${total.toFixed(2)}</span>
             </div>
 
+            {/* Checkout Button */}
             <button
               onClick={handleCheckout}
               className="mt-6 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
@@ -196,6 +264,7 @@ const Cart = () => {
               PROCEED TO CHECKOUT
             </button>
 
+            {/* Continue Shopping */}
             <button
               className="mt-3 w-full border border-gray-400 py-2 rounded hover:bg-gray-100"
               onClick={() => window.history.back()}

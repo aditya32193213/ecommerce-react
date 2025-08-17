@@ -1,126 +1,84 @@
-// import Navbar from "./components/layout/Navbar";
-// import Footer from "./components/layout/Footer";
-// import { Route, Routes } from "react-router-dom";
-// import Home from "./pages/Home";
-// import ProductDetails from "./pages/ProductDetails";
-// import Cart from "./pages/Cart";
-// import Wishlist from "./pages/Wishlist";
-// import Login from "./pages/Login";
-// import Dashboard from "./pages/Dashboard";
-// import ProtectedRoute from "./components/Common/ProtectedRoute";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import Banner from "./components/sections/banner";
-// import AOS from "aos";
-// import { useEffect } from "react";
-// import "aos/dist/aos.css";
-// import Checkout from "./pages/Checkout";
-// import ThankYou from "./pages/Thankyou";
+/**
+ * ============================================================
+ * File: App.jsx
+ * Purpose: Root application component
+ * ============================================================
+ *
+ * Responsibilities:
+ * - Initialize AOS (Animate On Scroll) for smooth animations
+ * - Render global layout components (Navbar, Banner, Footer)
+ * - Configure and render application routes
+ * - Wrap protected routes with <ProtectedRoute />
+ * - Provide a global ToastContainer for notifications
+ *
+ * ============================================================
+ */
 
-// function App() {
-//   useEffect(() => {
-//     AOS.init({ duration: 600, once: true });
-//   }, []);
-  
-//   return (
-//     <div className="min-h-screen flex flex-col" data-testid="app-container">
-//       <Navbar data-testid="navbar" />
-//       <Banner data-testid="banner" />
-
-//       <main className="flex-grow" data-testid="main-content">
-//         <Routes>
-//           <Route path="/" element={<Home data-testid="home-page" />} />
-//           <Route
-//             path="/product/:id"
-//             element={<ProductDetails data-testid="product-details-page" />}
-//           />
-//           <Route path="/cart" element={<Cart data-testid="cart-page" />} />
-//           <Route
-//             path="/wishlist"
-//             element={<Wishlist data-testid="wishlist-page" />}
-//           />
-//           <Route path="/login" element={<Login data-testid="login-page" />} />
-//           <Route
-//             path="/checkout"
-//             element={<Checkout data-testid="checkout-page" />}
-//           />
-//           <Route
-//             path="/thank-you"
-//             element={<ThankYou data-testid="thankyou-page" />}
-//           />
-
-//           {/* ✅ Protected Dashboard Route */}
-//           <Route
-//             path="/dashboard"
-//             element={
-//               <ProtectedRoute>
-//                 <Dashboard data-testid="dashboard-page" />
-//               </ProtectedRoute>
-//             }
-//           />
-
-//           {/* Fallback Route */}
-//           <Route
-//             path="*"
-//             element={
-//               <div
-//                 className="text-center mt-10 text-red-500 text-xl font-semibold"
-//                 data-testid="not-found"
-//               >
-//                 🚫 Page Not Found
-//               </div>
-//             }
-//           />
-//         </Routes>
-//       </main>
-
-//       <Footer data-testid="footer" />
-//       <ToastContainer position="top-center" autoClose={2000} />
-//     </div>
-//   );
-// }
-
-// export default App;
-
-import Navbar from "./components/layout/Navbar";
-import Footer from "./components/layout/Footer";
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import Banner from "./components/sections/banner";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AOS from "aos";
-import { useEffect } from "react";
-import "aos/dist/aos.css";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import Banner from "./components/sections/banner";
 import routes from "./routes";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
+/**
+ * ============================================================
+ *  Component: App
+ * ============================================================
+ * - Initializes AOS on mount
+ * - Provides a consistent layout with Navbar, Banner, Footer
+ * - Dynamically maps routes from `routes.js`
+ * - Handles protected routes using <ProtectedRoute>
+ * - Renders global ToastContainer for notifications
+ */
 function App() {
+  /**
+   * ============================================================
+   *  Effect: Initialize AOS
+   * ============================================================
+   * Runs once on component mount to enable animations.
+   */
   useEffect(() => {
     AOS.init({ duration: 600, once: true });
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col" data-testid="app-container">
+      {/* --- Global Layout Components --- */}
       <Navbar data-testid="navbar" />
       <Banner data-testid="banner" />
 
+      {/* --- Main Application Routes --- */}
       <main className="flex-grow" data-testid="main-content">
         <Routes>
           {routes.map(({ path, element, isProtected }, index) => (
             <Route
               key={index}
               path={path}
-              element={isProtected ? <ProtectedRoute>{element}</ProtectedRoute> : element}
+              element={
+                isProtected ? (
+                  <ProtectedRoute>{element}</ProtectedRoute>
+                ) : (
+                  element
+                )
+              }
             />
           ))}
         </Routes>
       </main>
 
+      {/* --- Footer --- */}
       <Footer data-testid="footer" />
+
+      {/* --- Toast Notifications --- */}
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }
 
 export default App;
-

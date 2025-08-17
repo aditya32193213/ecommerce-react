@@ -1,10 +1,26 @@
+/**
+ * ============================================================
+ * File: Login.test.jsx
+ * Purpose: Unit tests for the Login page component
+ * ============================================================
+ *
+ * These tests validate the following:
+ * - Login form renders correctly when user is not authenticated.
+ * - Welcome message and logout button render when user is authenticated.
+ * - "Remember me" checkbox toggles correctly.
+ * - Invalid credentials trigger an alert with the correct message.
+ *
+ * ============================================================
+ */
+
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer, { login, logout } from "../../redux/slices/authSlice";
+import authReducer from "../../redux/slices/authSlice";
 import Login from "../../pages/Login";
 import { BrowserRouter } from "react-router-dom";
 
+//  Utility to render Login with a custom store
 const renderWithStore = (preloadedState) => {
   const store = configureStore({
     reducer: {
@@ -26,6 +42,7 @@ const renderWithStore = (preloadedState) => {
 };
 
 describe("Login Page", () => {
+  //  Test: Renders login form when not authenticated
   test("renders login form correctly when not authenticated", () => {
     renderWithStore({
       auth: { isAuthenticated: false, username: null },
@@ -37,6 +54,7 @@ describe("Login Page", () => {
     expect(screen.getByTestId("login-button")).toBeInTheDocument();
   });
 
+  //  Test: Renders welcome message and logout button when authenticated
   test("renders welcome message and logout button when authenticated", () => {
     renderWithStore({
       auth: { isAuthenticated: true, username: "JohnDoe" },
@@ -46,6 +64,7 @@ describe("Login Page", () => {
     expect(screen.getByTestId("logout-button")).toBeInTheDocument();
   });
 
+  //  Test: Checkbox toggles correctly
   test("checkbox toggles state", () => {
     renderWithStore({
       auth: { isAuthenticated: false, username: null },
@@ -57,6 +76,7 @@ describe("Login Page", () => {
     expect(checkbox.checked).toBe(true);
   });
 
+  //  Test: Shows alert on invalid credentials
   test("shows alert on invalid credentials", () => {
     window.alert = jest.fn(); // mock alert
 

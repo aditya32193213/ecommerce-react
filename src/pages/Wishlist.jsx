@@ -1,3 +1,30 @@
+/**
+ * File: Wishlist.jsx
+ * Component: Wishlist
+ * 
+ * Purpose:
+ * This component renders the Wishlist page of the e-commerce app. 
+ * It shows a list of products the user has added to their wishlist, 
+ * allows them to add items to the cart, and remove items from the wishlist.
+ * 
+ * Features:
+ * - Displays wishlist items dynamically from Redux state.
+ * - Supports removing items from wishlist.
+ * - Allows adding wishlist items directly to the shopping cart.
+ * - Provides navigation links to product detail pages.
+ * - Displays a friendly message if the wishlist is empty.
+ * - Includes social media share icons.
+ * 
+ * Dependencies:
+ * - React, Redux (useSelector, useDispatch)
+ * - React Router (Link for navigation)
+ * - Redux slices (wishlistSlice, cartSlice)
+ * - UI libraries: Lucide-react icons, React-icons
+ * 
+ * Location in App:
+ * Accessible when the user navigates to the Wishlist page (e.g., `/wishlist`).
+ */
+
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromWishlist } from '../redux/slices/wishlistSlice';
@@ -7,19 +34,24 @@ import { X } from 'lucide-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaPinterest } from 'react-icons/fa';
 
 const Wishlist = () => {
+  //  Access wishlist state from Redux store
   const wishlist = useSelector((state) => state.wishlist);
+
+  //  Dispatch function to trigger actions (add/remove items)
   const dispatch = useDispatch();
 
   return (
     <div className="p-6 max-w-6xl mx-auto" data-testid="wishlist-container">
-      {/* Breadcrumb and Title */}
+      {/*  Breadcrumb and Page Title */}
       <div className="mb-6" data-testid="wishlist-header">
-        <p className="text-sm text-gray-500">Home &gt; Shop &gt; <span className="text-orange-500">Wishlist</span></p>
+        <p className="text-sm text-gray-500">
+          Home &gt; Shop &gt; <span className="text-orange-500">Wishlist</span>
+        </p>
         <h1 className="text-3xl font-semibold mt-2">Wishlist</h1>
         <p className="text-orange-500 mt-1">Shop</p>
       </div>
 
-      {/* Table Header */}
+      {/*  Table Header (only if wishlist has items) */}
       {wishlist.length > 0 && (
         <div
           className="grid grid-cols-6 gap-4 text-gray-500 font-semibold border-b py-2 text-sm"
@@ -32,40 +64,55 @@ const Wishlist = () => {
         </div>
       )}
 
-      {/* Wishlist Items */}
+      {/*  Wishlist Items OR Empty Message */}
       {wishlist.length === 0 ? (
+        //  Empty state message
         <p className="text-gray-600 mt-4" data-testid="wishlist-empty-message">
           Your wishlist is empty.
         </p>
       ) : (
+        //  Loop through wishlist items
         wishlist.map((item) => (
           <div
             key={item.id}
             className="grid grid-cols-6 gap-4 items-center py-4 border-b"
             data-testid={`wishlist-item-${item.id}`}
           >
+            {/*  Product Image & Title (with navigation links) */}
             <div className="col-span-3 flex items-center gap-4">
               <Link to={`/product/${item.id}`} data-testid="wishlist-item-image-link">
-                <img src={item.image} alt={item.title} className="w-16 h-16 object-contain rounded" />
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-16 h-16 object-contain rounded"
+                />
               </Link>
               <Link to={`/product/${item.id}`} data-testid="wishlist-item-title-link">
                 <p className="text-sm font-medium hover:underline">{item.title}</p>
               </Link>
             </div>
+
+            {/*  Price */}
             <div className="col-span-1 font-medium text-sm" data-testid="wishlist-item-price">
               ${item.price.toFixed(2)}
             </div>
+
+            {/*  Stock Status */}
             <div className="col-span-1 text-sm font-medium text-green-500" data-testid="wishlist-item-stock">
               In stock
             </div>
+
+            {/*  Actions: Add to Cart & Remove */}
             <div className="col-span-1 flex justify-center items-center gap-2">
               <button
-                onClick={() => dispatch(addToCart(item))}
+                onClick={() => dispatch(addToCart(item))} // Add item to cart
                 className="px-3 py-1 text-sm border border-orange-500 text-orange-500 rounded hover:bg-orange-500 hover:text-white transition"
                 data-testid="add-to-cart-button"
               >
                 Add to Cart
               </button>
+
+              {/*  Remove from wishlist */}
               <X
                 className="text-gray-400 hover:text-red-500 cursor-pointer w-4 h-4"
                 onClick={() => dispatch(removeFromWishlist(item.id))}
@@ -76,7 +123,7 @@ const Wishlist = () => {
         ))
       )}
 
-      {/* Social Share Icons */}
+      {/*  Social Share Icons (visible only if wishlist has items) */}
       {wishlist.length > 0 && (
         <div className="mt-6 text-sm text-gray-500" data-testid="wishlist-share-icons">
           <p className="mb-2">Share on:</p>

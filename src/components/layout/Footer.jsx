@@ -1,3 +1,17 @@
+/**
+ * Footer Component
+ * -----------------
+ * File: Footer.jsx
+ * Purpose: Displays the footer section across all pages of the e-commerce website.
+ * 
+ * Features:
+ *  - Company info with logo and social media icons
+ *  - Quick navigation links (Home, Cart, Wishlist, Login)
+ *  - Contact information with email, phone, and supported payment methods
+ *  - Newsletter subscription form
+ *  - Copyright notice
+ */
+
 import React from 'react';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 import upi from "../../assets/paymentLogo/upi.png";
@@ -11,14 +25,17 @@ const Footer = () => {
     <footer className="bg-gray-900 text-gray-100 pt-2 pb-3 mt-2" data-testid="footer">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
 
-        {/* Company Info */}
+        {/* Company Info Section */}
         <div data-testid="footer-company-info">
           <div className="mb-4">
+            {/* Company Logo */}
             <img src={logo} alt="Shopnetic Logo" className="h-20 w-20" data-testid="footer-logo" />
           </div>
           <p className="text-sm leading-relaxed">
             Shopnetic is your futuristic shopping hub where innovation meets lifestyle.
           </p>
+
+          {/* Social Media Icons */}
           <div className="flex space-x-4 mt-4" data-testid="footer-social-icons">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <Facebook size={20} className="hover:text-blue-500" />
@@ -32,7 +49,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Quick Links */}
+        {/* Quick Links Section */}
         <div data-testid="footer-quick-links">
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm">
@@ -43,11 +60,17 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Contact Info */}
+        {/* Contact Information Section */}
         <div data-testid="footer-contact-info">
           <h3 className="text-lg font-semibold mb-4">Contact</h3>
-          <p className="text-sm">Email: <a href="mailto:support@shopnetic.com" className="hover:underline">support@shopnetic.com</a></p>
-          <p className="text-sm mt-2">Phone: <a href="tel:+919876543210" className="hover:underline">+91 98765 43210</a></p>
+          <p className="text-sm">
+            Email: <a href="mailto:support@shopnetic.com" className="hover:underline">support@shopnetic.com</a>
+          </p>
+          <p className="text-sm mt-2">
+            Phone: <a href="tel:+919876543210" className="hover:underline">+91 98765 43210</a>
+          </p>
+
+          {/* Supported Payment Methods */}
           <div className="mt-4 flex space-x-2" data-testid="footer-payment-icons">
             <img src={visa} alt="Visa" className="h-6" />
             <img src={mastercard} alt="MasterCard" className="h-6" />
@@ -56,7 +79,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter */}
+        {/* Newsletter Subscription Section */}
         <div data-testid="footer-newsletter">
           <h3 className="text-lg font-semibold mb-4">Subscribe</h3>
           <form className="flex flex-col gap-2">
@@ -77,7 +100,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Footer Bottom */}
+      {/* Footer Bottom Section */}
       <div className="text-center mt-6 text-sm text-gray-500" data-testid="footer-bottom">
         © {new Date().getFullYear()} Shopnetic. All rights reserved.
       </div>

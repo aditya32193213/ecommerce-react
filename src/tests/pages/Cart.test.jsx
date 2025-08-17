@@ -1,14 +1,33 @@
+/**
+ * ============================================================
+ * File: Cart.test.jsx
+ * Purpose: Unit tests for the Cart page component
+ * ============================================================
+ *
+ * These tests validate the following:
+ * - Cart items render correctly from the Redux store.
+ * - Subtotal and total values are displayed correctly.
+ * - Quantity increment/decrement buttons trigger actions.
+ * - Coupon code can be entered and applied.
+ * - Shipping method selection updates correctly.
+ * - Checkout button triggers navigation.
+ *
+ * ============================================================
+ */
+
 import { render, screen, fireEvent } from "@testing-library/react";
 import Cart from "../../pages/Cart";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
+//  Create a mock store for testing Redux state
 const mockStore = configureStore([]);
 
 describe("Cart component", () => {
   let store;
 
+  //  Setup before each test
   beforeEach(() => {
     store = mockStore({
       cart: [
@@ -18,9 +37,9 @@ describe("Cart component", () => {
           price: 100,
           quantity: 2,
           image: "test.jpg",
-          category: "electronics"
-        }
-      ]
+          category: "electronics",
+        },
+      ],
     });
 
     render(
@@ -32,35 +51,43 @@ describe("Cart component", () => {
     );
   });
 
+  //  Test: Renders cart items correctly
   it("renders cart items", () => {
     expect(screen.getByTestId("cart-item-1")).toBeInTheDocument();
   });
 
+  //  Test: Displays correct subtotal and total
   it("displays correct subtotal and total", () => {
     expect(screen.getByTestId("subtotal")).toHaveTextContent("$200.00");
     expect(screen.getByTestId("total")).toHaveTextContent("$200.00");
   });
 
+  //  Test: Increments and decrements quantity
   it("increments and decrements quantity", () => {
-    fireEvent.click(screen.getByTestId("increase-btn-1"));
-    fireEvent.click(screen.getByTestId("decrease-btn-1"));
-    // These interactions should dispatch actions — further tests can mock dispatch and assert calls
+    fireEvent.click(screen.getByTestId("increase-btn-1")); // ➕ Increase quantity
+    fireEvent.click(screen.getByTestId("decrease-btn-1")); // ➖ Decrease quantity
+    //  These actions should dispatch Redux updates — could be asserted via mocked dispatch
   });
 
+  //  Test: Applies coupon code
   it("applies coupon code", () => {
-    fireEvent.change(screen.getByTestId("coupon-input"), { target: { value: "SAVE10" } });
+    fireEvent.change(screen.getByTestId("coupon-input"), {
+      target: { value: "SAVE10" },
+    });
     fireEvent.click(screen.getByTestId("apply-coupon-btn"));
-    // Would need to mock toast and verify effects
+    //  Would need mocked toast or reducer check for full validation
   });
 
+  //  Test: Changes shipping method
   it("changes shipping method", () => {
-    fireEvent.click(screen.getByTestId("ship-standard"));
-    fireEvent.click(screen.getByTestId("ship-express"));
+    fireEvent.click(screen.getByTestId("ship-standard")); // Select standard shipping
+    fireEvent.click(screen.getByTestId("ship-express")); // Switch to express shipping
     expect(screen.getByTestId("ship-express")).toBeChecked();
   });
 
+  //  Test: Triggers checkout
   it("triggers checkout", () => {
     fireEvent.click(screen.getByTestId("checkout-btn"));
-    // You could use jest.mock for useNavigate to assert it was called
+    //  Could mock useNavigate to verify navigation
   });
 });

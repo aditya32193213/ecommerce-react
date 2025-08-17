@@ -1,31 +1,44 @@
-import { render, screen, waitFor } from "@testing-library/react";
+/**
+ * ============================================================
+ * File: App.test.js
+ * Purpose: Integration tests for the App component
+ * ============================================================
+ *
+ * These tests validate:
+ * - Core layout components (Navbar, Banner, Footer) render correctly
+ * - AOS initializes on mount
+ * - Routing works for all major pages (Home, Cart, Wishlist, etc.)
+ * - Protected routes (Dashboard) display as expected
+ * - Invalid paths render the "Page Not Found" message
+ *
+ * ============================================================
+ */
+
+import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import App from "../App";
 import AOS from "aos";
 
-// --- MOCK THIRD-PARTY LIBRARIES ---
-
-// Mock AOS to prevent errors in the test environment
-jest.mock("aos", () => ({
-  init: jest.fn(),
-}));
-
-// Mock react-toastify to avoid rendering ToastContainer during tests
+/**
+ * ============================================================
+ *  Mock Third-Party Libraries
+ * ============================================================
+ * - AOS: prevents animation errors in test environment
+ * - react-toastify: avoids rendering the ToastContainer
+ * - Child components (Navbar, Footer, Pages): mocked for isolation
+ */
+jest.mock("aos", () => ({ init: jest.fn() }));
 jest.mock("react-toastify", () => ({
   ToastContainer: () => <div data-testid="toast-container" />,
 }));
-
-// Mock child components to isolate the App component logic
 jest.mock("../components/layout/Navbar", () => () => <div data-testid="navbar" />);
 jest.mock("../components/layout/Footer", () => () => <div data-testid="footer" />);
 jest.mock("../components/sections/banner", () => () => <div data-testid="banner" />);
 jest.mock("../components/Common/ProtectedRoute", () => ({ children }) => children);
 jest.mock("../pages/Home", () => () => <div data-testid="home-page" />);
-jest.mock("../pages/ProductDetails", () => () => (
-  <div data-testid="product-details-page" />
-));
+jest.mock("../pages/ProductDetails", () => () => <div data-testid="product-details-page" />);
 jest.mock("../pages/Cart", () => () => <div data-testid="cart-page" />);
 jest.mock("../pages/Wishlist", () => () => <div data-testid="wishlist-page" />);
 jest.mock("../pages/Login", () => () => <div data-testid="login-page" />);
@@ -33,18 +46,20 @@ jest.mock("../pages/Dashboard", () => () => <div data-testid="dashboard-page" />
 jest.mock("../pages/Checkout", () => () => <div data-testid="checkout-page" />);
 jest.mock("../pages/Thankyou", () => () => <div data-testid="thankyou-page" />);
 
-// --- HELPER FUNCTION FOR RENDERING ---
-
-// This helper function sets up a consistent test environment with a Redux store and router.
-// It allows us to simulate different starting points for our tests.
+/**
+ * ============================================================
+ *  Helper Function: renderWithProviders
+ * ============================================================
+ * - Wraps components with Redux store and MemoryRouter
+ * - Accepts a custom route and preloaded state
+ */
 const renderWithProviders = (
   ui,
   {
     preloadedState = {},
     store = configureStore({
       reducer: {
-        // You'll need to add your actual reducers here.
-        // For now, we use a placeholder to allow the store to be created.
+        //  Add real reducers as needed
         auth: (state = { isLoggedIn: false }, action) => state,
       },
       preloadedState,
@@ -61,10 +76,17 @@ const renderWithProviders = (
   );
 };
 
-// --- TEST SUITE FOR APP COMPONENT ---
-
+/**
+ * ============================================================
+ *  Test Suite: App Component
+ * ============================================================
+ */
 describe("App Component", () => {
-  // Test 1: Check if core components render on initial load
+  /**
+   * ============================================================
+   *  Core Layout Rendering
+   * ============================================================
+   */
   it("renders Navbar, Banner, and Footer on the home page", () => {
     renderWithProviders(<App />);
     expect(screen.getByTestId("navbar")).toBeInTheDocument();
@@ -72,46 +94,65 @@ describe("App Component", () => {
     expect(screen.getByTestId("footer")).toBeInTheDocument();
   });
 
-  // Test 2: Check if AOS.init is called on component mount
+  /**
+   * ============================================================
+   *  AOS Initialization
+   * ============================================================
+   */
   it("calls AOS.init on component mount", () => {
     renderWithProviders(<App />);
     expect(AOS.init).toHaveBeenCalledTimes(1);
   });
 
-  // Test 3: Check if the Home page renders on the default path "/"
-  it("renders the Home page for the default route '/'", () => {
+  /**
+   * ============================================================
+   *  Routing: Public Routes
+   * ============================================================
+   */
+  it("renders the Home page for '/' route", () => {
     renderWithProviders(<App />, { route: "/" });
     expect(screen.getByTestId("home-page")).toBeInTheDocument();
   });
 
-  // Test 4: Check if the Cart page renders on the "/cart" path
-  it("renders the Cart page for the '/cart' route", () => {
+  it("renders the Cart page for '/cart' route", () => {
     renderWithProviders(<App />, { route: "/cart" });
     expect(screen.getByTestId("cart-page")).toBeInTheDocument();
   });
 
-  // Test 5: Check if the Login page renders on the "/login" path
-  it("renders the Login page for the '/login' route", () => {
+  it("renders the Login page for '/login' route", () => {
     renderWithProviders(<App />, { route: "/login" });
     expect(screen.getByTestId("login-page")).toBeInTheDocument();
   });
 
-  // Test 6: Check if the "Page Not Found" message renders for an invalid path
-  it("renders the 'Page Not Found' for an invalid route", () => {
+  /**
+   * ============================================================
+   *  Routing: Invalid Paths
+   * ============================================================
+   */
+  it("renders 'Page Not Found' for invalid route", () => {
     renderWithProviders(<App />, { route: "/invalid-path" });
     expect(screen.getByText("🚫 Page Not Found")).toBeInTheDocument();
   });
 
-  // Test 7: Check if the Dashboard page renders when the user is logged in
-  // NOTE: This test currently assumes the ProtectedRoute is mocked to always render children.
-  // To test the protected route logic, you would need to mock `useSelector` to control the `isLoggedIn` state.
-  it("renders the Dashboard page for '/dashboard' route (protected)", () => {
+  /**
+   * ============================================================
+   *  Routing: Protected Routes
+   * ============================================================
+   * NOTE:
+   * - ProtectedRoute is mocked to always render children.
+   * - To properly test auth logic, mock useSelector or auth state.
+   */
+  it("renders the Dashboard page for '/dashboard' route", () => {
     renderWithProviders(<App />, { route: "/dashboard" });
     expect(screen.getByTestId("dashboard-page")).toBeInTheDocument();
   });
 
-  // Test 8: Check that other routes also render correctly
-  it("renders ProductDetails, Wishlist, Checkout, and ThankYou pages for their respective routes", () => {
+  /**
+   * ============================================================
+   *  Routing: Other Routes
+   * ============================================================
+   */
+  it("renders ProductDetails, Wishlist, Checkout, and ThankYou pages", () => {
     const routesToTest = {
       "/product/123": "product-details-page",
       "/wishlist": "wishlist-page",

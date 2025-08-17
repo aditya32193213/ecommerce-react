@@ -1,3 +1,17 @@
+/**
+ * ============================================================
+ * File: GlobalLoader.test.jsx
+ * Purpose: Unit tests for GlobalLoader component
+ * ============================================================
+ *
+ * These tests validate the following:
+ * - GlobalLoader renders nothing when globalLoading is false.
+ * - GlobalLoader renders the loader and ClipLoader spinner
+ *   when globalLoading is true.
+ *
+ * ============================================================
+ */
+
 import React from "react";
 import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
@@ -7,6 +21,7 @@ import GlobalLoader from "../../components/common/GlobalLoader";
 const mockStore = configureStore([]);
 
 describe("GlobalLoader Component", () => {
+  //  Test: Does not render loader when globalLoading is false
   it("renders nothing when globalLoading is false", () => {
     const store = mockStore({ app: { globalLoading: false } });
 
@@ -16,9 +31,10 @@ describe("GlobalLoader Component", () => {
       </Provider>
     );
 
-    expect(queryByTestId("global-loader")).toBeNull();
+    expect(queryByTestId("global-loader")).toBeNull(); //  Loader should not be present
   });
 
+  //  Test: Renders loader and spinner when globalLoading is true
   it("renders loader when globalLoading is true", () => {
     const store = mockStore({ app: { globalLoading: true } });
 
@@ -28,7 +44,7 @@ describe("GlobalLoader Component", () => {
       </Provider>
     );
 
-    expect(getByTestId("global-loader")).toBeInTheDocument();
-    expect(getByTestId("clip-loader")).toBeInTheDocument();
+    expect(getByTestId("global-loader")).toBeInTheDocument(); //  Loader wrapper
+    expect(getByTestId("clip-loader")).toBeInTheDocument();   //  Spinner must be visible
   });
 });

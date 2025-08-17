@@ -1,7 +1,30 @@
+/**
+ * ============================================================
+ * File: wishlistSlice.test.js
+ * Purpose: Unit tests for the wishlist Redux slice
+ * ============================================================
+ *
+ * These tests validate the following:
+ * - Loading wishlist state from localStorage
+ * - Adding new items to wishlist
+ * - Preventing duplicate items in wishlist
+ * - Removing items from wishlist
+ * - Ensuring persistence to localStorage
+ *
+ * ============================================================
+ */
+
 describe("wishlistSlice reducer", () => {
   let getItemMock;
   let setItemMock;
 
+  /**
+   * ============================================================
+   *  Setup
+   * ============================================================
+   * - Reset modules for fresh reducer import
+   * - Mock localStorage getItem and setItem
+   */
   beforeEach(() => {
     jest.resetModules(); // Clears module cache so reducer re-imports fresh
 
@@ -17,6 +40,11 @@ describe("wishlistSlice reducer", () => {
     });
   });
 
+  /**
+   * ============================================================
+   *  Load Initial State
+   * ============================================================
+   */
   it("should return initial state from localStorage if available", () => {
     const storedData = JSON.stringify([{ id: 1, name: "Test Product" }]);
     getItemMock.mockReturnValueOnce(storedData);
@@ -29,6 +57,11 @@ describe("wishlistSlice reducer", () => {
     ]);
   });
 
+  /**
+   * ============================================================
+   *  Add to Wishlist
+   * ============================================================
+   */
   it("should handle addToWishlist for new item", () => {
     const { default: wishlistReducer, addToWishlist } = require("../../../redux/slices/wishlistSlice");
     const initialState = [];
@@ -43,6 +76,11 @@ describe("wishlistSlice reducer", () => {
     );
   });
 
+  /**
+   * ============================================================
+   *  Prevent Duplicates
+   * ============================================================
+   */
   it("should not add item if it already exists", () => {
     const { default: wishlistReducer, addToWishlist } = require("../../../redux/slices/wishlistSlice");
     const initialState = [{ id: 1, name: "Existing Product" }];
@@ -53,6 +91,11 @@ describe("wishlistSlice reducer", () => {
     expect(setItemMock).not.toHaveBeenCalled();
   });
 
+  /**
+   * ============================================================
+   *  Remove from Wishlist
+   * ============================================================
+   */
   it("should handle removeFromWishlist", () => {
     const { default: wishlistReducer, removeFromWishlist } = require("../../../redux/slices/wishlistSlice");
     const initialState = [

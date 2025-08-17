@@ -1,3 +1,22 @@
+/**
+ * Checkout Component
+ * ------------------
+ * File: Checkout.jsx
+ * Purpose: Provides checkout functionality for the e-commerce website.
+ * 
+ * Features:
+ *  - Collects and validates user address details (name, street, city, state, zip, phone)
+ *  - Allows users to select shipping options (Free, Standard, Express)
+ *  - Supports multiple payment methods (Cash on Delivery, UPI, Card)
+ *  - Dynamically renders UPI and Card input forms based on selected payment method
+ *  - Calculates subtotal, shipping, discount, and total amount
+ *  - Validates form inputs before placing an order
+ *  - On successful checkout:
+ *       → Clears cart from Redux state
+ *       → Displays success notification
+ *       → Redirects user to "Thank You" page with order details
+ */
+
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +28,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
 
+  // State to manage address details
   const [address, setAddress] = useState({
     name: "",
     street: "",
@@ -18,35 +38,49 @@ const Checkout = () => {
     phone: "",
   });
 
+  // State for shipping, discounts, and payment options
   const [shipping, setShipping] = useState("free");
   const [discount, setDiscount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
+  // Payment-specific states
   const [upiId, setUpiId] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
 
+  // Price calculations
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = shipping === "free" ? 0 : shipping === "standard" ? 10 : 20;
   const total = Math.max(subtotal + shippingCost - discount, 0);
 
+  /**
+   * Handle order placement
+   * -----------------------
+   * - Validates address fields
+   * - Validates payment method details
+   * - Clears cart and redirects to Thank You page with order summary
+   */
   const handlePlaceOrder = () => {
+    // Address validation
     if (Object.values(address).some((v) => v.trim() === "")) {
       toast.warning("Please fill in all address fields");
       return;
     }
 
+    // UPI validation
     if (paymentMethod === "upi" && upiId.trim() === "") {
       toast.warning("Please enter your UPI ID");
       return;
     }
 
+    // Card validation
     if (paymentMethod === "card" && (!cardNumber || !expiry || !cvv)) {
       toast.warning("Please fill in all card details");
       return;
     }
 
+    // Prepare payment details for navigation
     const paymentDetails =
       paymentMethod === "upi"
         ? { upiId }
@@ -54,6 +88,7 @@ const Checkout = () => {
         ? { cardNumber, expiry }
         : {};
 
+    // Clear cart and redirect to Thank You page
     dispatch(clearCart());
     toast.success("Order placed successfully!");
 
@@ -78,7 +113,7 @@ const Checkout = () => {
         Checkout
       </h2>
 
-      {/* Address Inputs */}
+      {/* Address Form */}
       <div className="grid grid-cols-1 gap-3" data-testid="address-form">
         {["name", "street", "city", "state", "zip", "phone"].map((field) => (
           <input
@@ -93,7 +128,7 @@ const Checkout = () => {
         ))}
       </div>
 
-      {/* Shipping Option */}
+      {/* Shipping Selection */}
       <div className="mt-4">
         <label className="font-semibold mr-4">Shipping:</label>
         <select
@@ -108,7 +143,7 @@ const Checkout = () => {
         </select>
       </div>
 
-      {/* Payment Method */}
+      {/* Payment Method Options */}
       <div className="mt-6" data-testid="payment-method-section">
         <label className="font-semibold block mb-2">Payment Method:</label>
         <div className="space-y-2">
@@ -132,7 +167,7 @@ const Checkout = () => {
         </div>
       </div>
 
-      {/* UPI Form */}
+      {/* UPI Payment Form */}
       {paymentMethod === "upi" && (
         <div className="mt-4" data-testid="upi-form">
           <label className="block text-sm font-medium">Enter UPI ID:</label>
@@ -147,7 +182,7 @@ const Checkout = () => {
         </div>
       )}
 
-      {/* Card Form */}
+      {/* Card Payment Form */}
       {paymentMethod === "card" && (
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="card-form">
           <div className="col-span-2">
@@ -188,7 +223,7 @@ const Checkout = () => {
         </div>
       )}
 
-      {/* Summary */}
+      {/* Order Summary */}
       <div className="mt-6 font-semibold text-lg" data-testid="order-summary">
         <p>Subtotal: ${subtotal.toFixed(2)}</p>
         <p>Shipping: ${shippingCost}</p>
@@ -196,6 +231,7 @@ const Checkout = () => {
         <p>Total: ${total.toFixed(2)}</p>
       </div>
 
+      {/* Place Order Button */}
       <button
         onClick={handlePlaceOrder}
         className="mt-6 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"

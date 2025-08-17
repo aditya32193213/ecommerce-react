@@ -1,3 +1,19 @@
+/**
+ * ============================================================
+ * File: Home.test.jsx
+ * Purpose: Unit tests for the Home page component
+ * ============================================================
+ *
+ * These tests validate the following:
+ * - Home page shows a loading spinner initially.
+ * - Categories and products are rendered after fetch.
+ * - Products can be filtered by category.
+ * - Search query properly filters products and shows a "no products" message.
+ * - "What We Believe" section is displayed correctly.
+ *
+ * ============================================================
+ */
+
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import Home from "../../pages/Home";
 import { BrowserRouter } from "react-router-dom";
@@ -5,7 +21,7 @@ import { Provider } from "react-redux";
 import store from "../../redux/store";
 import * as redux from "react-redux";
 
-// Mock data
+//  Mock data for categories and products
 const mockCategories = ["electronics", "jewelery"];
 const mockProducts = [
   {
@@ -24,7 +40,7 @@ const mockProducts = [
   },
 ];
 
-// Mock fetch
+//  Mock fetch API
 beforeEach(() => {
   global.fetch = jest.fn((url) => {
     if (url.includes("categories")) {
@@ -41,12 +57,13 @@ beforeEach(() => {
   });
 });
 
-// Mock search state (optional)
+//  Mock Redux useSelector
 jest.mock("react-redux", () => ({
   ...jest.requireActual("react-redux"),
   useSelector: jest.fn(),
 }));
 
+//  Utility to render Home with Redux + Router providers
 const renderWithProviders = (ui) => {
   return render(
     <Provider store={store}>
@@ -56,16 +73,19 @@ const renderWithProviders = (ui) => {
 };
 
 describe("Home Page", () => {
+  //  Reset selector before each test
   beforeEach(() => {
     redux.useSelector.mockReturnValue(""); // no search query
   });
 
+  //  Test: Shows loading spinner initially
   it("renders loading spinner initially", () => {
     renderWithProviders(<Home />);
     const spinner = screen.getByTestId("loading-spinner");
     expect(spinner).toBeInTheDocument();
   });
 
+  //  Test: Renders categories and products after fetch
   it("renders category buttons and products after fetch", async () => {
     renderWithProviders(<Home />);
     await waitFor(() => {
@@ -74,11 +94,12 @@ describe("Home Page", () => {
       expect(screen.getByTestId("category-jewelery")).toBeInTheDocument();
     });
 
-    // Check products
+    //  Products rendered
     expect(screen.getByTestId("product-1")).toBeInTheDocument();
     expect(screen.getByTestId("product-2")).toBeInTheDocument();
   });
 
+  //  Test: Filters products by category
   it("filters products by category", async () => {
     renderWithProviders(<Home />);
     await waitFor(() => screen.getByTestId("category-jewelery"));
@@ -90,6 +111,7 @@ describe("Home Page", () => {
     expect(screen.queryByTestId("product-2")).not.toBeInTheDocument();
   });
 
+  //  Test: Shows "no products" message when search yields nothing
   it("shows message if no products match search", async () => {
     redux.useSelector.mockReturnValue("nonexistent product");
 
@@ -102,6 +124,7 @@ describe("Home Page", () => {
     );
   });
 
+  //  Test: Renders "What We Believe" section
   it("renders WhatWeBelieve section", async () => {
     renderWithProviders(<Home />);
     await waitFor(() => screen.getByTestId("belief-section"));

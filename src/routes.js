@@ -1,4 +1,22 @@
-// src/routes.js
+/**
+ * ============================================================
+ * File: routes.js
+ * Purpose: Centralized configuration for application routes
+ * ============================================================
+ *
+ * Responsibilities:
+ * - Define all application routes in a single place
+ * - Associate each route with:
+ *    - `name` → Human-readable identifier
+ *    - `path` → URL pattern
+ *    - `element` → Component to render
+ *    - `isProtected` → Whether the route requires authentication
+ * - Provide a fallback "Not Found" route for invalid URLs
+ *
+ * ============================================================
+ */
+
+// --- PAGE IMPORTS ---
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
@@ -8,6 +26,16 @@ import Dashboard from "./pages/Dashboard";
 import Checkout from "./pages/Checkout";
 import ThankYou from "./pages/Thankyou";
 
+/**
+ * ============================================================
+ *  ROUTE DEFINITIONS
+ * ============================================================
+ * Each object defines a single route:
+ *  - `name`: descriptive label
+ *  - `path`: route path
+ *  - `element`: component to render
+ *  - `isProtected`: authentication requirement
+ */
 const routes = [
   {
     name: "Home",
@@ -55,7 +83,7 @@ const routes = [
     name: "Dashboard",
     path: "/dashboard",
     element: <Dashboard data-testid="dashboard-page" />,
-    isProtected: true,
+    isProtected: true, //  requires authentication
   },
   {
     name: "Not Found",
@@ -72,4 +100,5 @@ const routes = [
   },
 ];
 
+// --- EXPORT ROUTES ---
 export default routes;

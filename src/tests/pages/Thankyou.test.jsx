@@ -1,7 +1,23 @@
+/**
+ * ============================================================
+ * File: Thankyou.test.jsx
+ * Purpose: Unit tests for the ThankYou page component
+ * ============================================================
+ *
+ * These tests validate the following:
+ * - Thank you message and order summary render correctly.
+ * - Payment details are displayed properly.
+ * - Discount is rendered if available.
+ * - Continue shopping button is displayed.
+ *
+ * ============================================================
+ */
+
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ThankYou from "../../pages/Thankyou";
 
+//  Mock order data
 const mockOrder = {
   paymentMethod: "card",
   shippingLabel: "Express Delivery",
@@ -13,6 +29,7 @@ const mockOrder = {
   ],
 };
 
+//  Helper to render with router and state
 const renderWithRouter = (ui, { route = "/", state = {} } = {}) => {
   window.history.pushState({}, "Test page", route);
   return render(
@@ -25,6 +42,7 @@ const renderWithRouter = (ui, { route = "/", state = {} } = {}) => {
 };
 
 describe("ThankYou Page", () => {
+  //  Test: Renders thank you message and order summary
   test("renders thank you message and order summary", () => {
     renderWithRouter(<ThankYou />, { route: "/", state: { order: mockOrder } });
 
@@ -35,6 +53,7 @@ describe("ThankYou Page", () => {
     expect(screen.getByTestId("total-price")).toHaveTextContent("Total: $90.00");
   });
 
+  //  Test: Renders payment details correctly
   test("renders payment details correctly", () => {
     renderWithRouter(<ThankYou />, { route: "/", state: { order: mockOrder } });
 
@@ -42,12 +61,14 @@ describe("ThankYou Page", () => {
     expect(paymentMethod).toHaveTextContent("Credit/Debit Card");
   });
 
+  //  Test: Displays discount if available
   test("renders discount if available", () => {
     renderWithRouter(<ThankYou />, { route: "/", state: { order: mockOrder } });
 
     expect(screen.getByTestId("discount")).toHaveTextContent("Coupon Discount: - $10.00");
   });
 
+  //  Test: Renders continue shopping button
   test("renders continue shopping button", () => {
     renderWithRouter(<ThankYou />, { route: "/", state: { order: mockOrder } });
 
