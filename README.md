@@ -201,66 +201,66 @@ src/
 
 ### 🛍️ Shop / Product Listing
 - Shows product grid with categories, filters, search functionality, and pagination.
-![Shop Page Screenshot](./assets/screenshots/user/02-user-shop.png)
+![Shop Page Screenshot](src/assets/screenshots/user/02-user-shop.png)
 
 ### 📦 Product Details Page
 - Detailed product view including image, price, rating, stock status, and Add to Cart / Wishlist actions.
-![Product Details Page Screenshot](./assets/screenshots/user/03-user-product-details.png)
+![Product Details Page Screenshot](src/assets/screenshots/user/03-user-product-details.png)
 
 ### 🛒 Cart Page
 - Displays selected cart items with quantity controls, price breakdown, and checkout option.
-![Cart Page Screenshot](./assets/screenshots/user/04-user-cart.png)
+![Cart Page Screenshot](src/assets/screenshots/user/04-user-cart.png)
 
 ### ❤️ Wishlist Page
 - Shows user-saved products with options to remove items or move them to the cart.
-![Wishlist Page Screenshot](./assets/screenshots/user/05-user-wishlist.png)
+![Wishlist Page Screenshot](src/assets/screenshots/user/05-user-wishlist.png)
 
 ### 📍 Checkout Page
 - Captures shipping details, order summary, and payment method selection.
-![Checkout Page Screenshot](./assets/screenshots/user/06-user-checkout.png)
+![Checkout Page Screenshot](src/assets/screenshots/user/06-user-checkout.png)
 
 ### 💳 Payment Page
 - Secure payment flow with Stripe / Cash on Delivery options.
-![Checkout Page Screenshot](./assets/screenshots/user/07-user-payment.png)
+![Checkout Page Screenshot](src/assets/screenshots/user/07-user-payment.png)
 
 ### ✅ Order Confirmation (Thank You Page)
 - Confirms successful order placement with order ID and order summary.
-![Thank You Page Screenshot](./assets/screenshots/user/08-user-thankyou.png)
+![Thank You Page Screenshot](src/assets/screenshots/user/08-user-thankyou.png)
 
 ### 📜 Order History Page
 - Lists all previous orders placed by the user.
-![Order History Page Screenshot](./assets/screenshots/user/09-user-order-history.png)
+![Order History Page Screenshot](src/assets/screenshots/user/09-user-order-history.png)
 
 ### 🧾 Order Details Page (User)
 - Displays complete order details with Download Invoice (PDF) option.
-![Order Details Page Screenshot](./assets/screenshots/user/10-user-order-details.png)
+![Order Details Page Screenshot](src/assets/screenshots/user/10-user-order-details.png)
 
 
 ## 🛠️ Admin Flow Screenshots
 
 ### 📊 Admin Dashboard (Analytics)
 - Shows real-time analytics charts including order trends, revenue, and order status distribution.
-![Admin Dashboard Screenshot](./assets/screenshots/admin/01-admin-dashboard.png)
+![Admin Dashboard Screenshot](src/assets/screenshots/admin/01-admin-dashboard.png)
 
 ### 📦 Product Management – List View
 - Displays all products with options to create, edit, or delete items.
-![Product List Page Screenshot](./assets/screenshots/admin/02-admin-product-list.png)
+![Product List Page Screenshot](src/assets/screenshots/admin/02-admin-product-list.png)
 
 ### ✏️ Product Edit Page
 - Admin form to update product details including price, stock, image, and category.
-![Product Edit Page Screenshot](./assets/screenshots/admin/03-admin-product-edit.png)
+![Product Edit Page Screenshot](src/assets/screenshots/admin/03-admin-product-edit.png)
 
 ### 📑 Order Management – Order List
 - Lists all customer orders with status tracking and navigation to order details.
-![Order List Page Screenshot](./assets/screenshots/admin/04-admin-order-list.png)
+![Order List Page Screenshot](src/assets/screenshots/admin/04-admin-order-list.png)
 
 ### 🧾 Order Details Page (Admin)
 - Detailed order view with status update controls and Invoice PDF download.
-![Order Details Page Screenshot](./assets/screenshots/admin/05-admin-order-details.png)
+![Order Details Page Screenshot](src/assets/screenshots/admin/05-admin-order-details.png)
 
 ### 👥 User Management Page
 - Displays registered users with admin role toggle and delete functionality.
-![User List Page Screenshot](./assets/screenshots/admin/06-admin-user-list.png)
+![User List Page Screenshot](src/assets/screenshots/admin/06-admin-user-list.png)
 
 ---
 
