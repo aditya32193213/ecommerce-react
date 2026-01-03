@@ -221,7 +221,7 @@ src/
 
 ### 💳 Payment Page
 - Secure payment flow with Stripe / Cash on Delivery options.
-![Checkout Page Screenshot](./assets/screenshots/user/07-user-paayment.png)
+![Checkout Page Screenshot](./assets/screenshots/user/07-user-payment.png)
 
 ### ✅ Order Confirmation (Thank You Page)
 - Confirms successful order placement with order ID and order summary.
