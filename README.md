@@ -197,7 +197,7 @@ src/
 
 ### 🏠 Home Page
 - Displays the landing page with navbar, banner, featured products, and navigation links.
-![Homepage Screenshot](./assets/screenshots/user/01-user-home.png)
+![Homepage Screenshot](src/assets/screenshots/user/01-user-home.png)
 
 ### 🛍️ Shop / Product Listing
 - Shows product grid with categories, filters, search functionality, and pagination.
