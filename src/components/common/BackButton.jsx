@@ -1,47 +1,50 @@
 /**
- * BackButton Component
- * ---------------------
+ * =========================================================
  * File: BackButton.jsx
- * Purpose: Displays a back navigation button on all pages 
- * except the homepage ("/") and login page ("/login").
- * 
- * Features:
- *  - Uses React Router's `useNavigate` to go back one step in history
- *  - Conditionally hidden on homepage and login page
- *  - Sticky position at the top for easy access
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Provide reusable navigation back button.
+ *
+ * Responsibilities:
+ * - Navigate user to previous route
+ * - Auto-hide on restricted pages
+ *
+ * Notes:
+ * - Uses react-router navigation stack
+ * =========================================================
  */
 
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 const BackButton = () => {
-  const navigate = useNavigate(); // React Router hook for navigation
-  const { pathname } = useLocation(); // Get current path
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  // Hides BackButton on homepage ("/") and login page ("/login")
-  const isHidden = pathname === "/" || pathname === "/login";
+  // ✅ LOGIC FIX: Hide on Home, Login, AND Signup pages
+  // Auth pages (Login/Signup) should usually be standalone without generic back buttons.
+  const hiddenPaths = ["/", "/login", "/signup"];
+  const isHidden = hiddenPaths.includes(pathname);
+
+  if (isHidden) return null;
 
   return (
-    <div
-      // Wrapper div is hidden on homepage & login page
-      className={`${isHidden ? "hidden" : "flex justify-start"}`}
-      data-testid="back-button-wrapper"
-    >
-      <div className="p-4">
-        {/* Sticky container ensures button stays at top while scrolling */}
-        <div className="sticky top-0 z-30 inline-block shadow-sm">
-          <button
-            data-testid="back-button"
-            // Navigate one step back in history when clicked
-            onClick={() => navigate(-1)}
-            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition flex items-center gap-2"
-          >
-            {/* Left arrow icon with text */}
-            <ArrowLeft size={16} />
-            Back
-          </button>
-        </div>
-      </div>
+    // Wrapper: Fixed position ensures it stays visible while scrolling
+    // 'top-24' pushes it just below your Navbar (assuming Navbar is ~h-16 to h-20)
+    <div 
+      className="fixed top-24 left-4 z-40 md:left-8 animate-in fade-in slide-in-from-left-4 duration-500">
+      <button
+        onClick={() => navigate(-1)}
+        className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm rounded-full text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-white hover:shadow-md hover:border-blue-100 transition-all duration-300 active:scale-95"
+      >
+        {/* Icon Interaction: Arrow slides left on hover */}
+        <ArrowLeft 
+          size={16} 
+          className="transition-transform duration-300 group-hover:-translate-x-1" 
+        />
+        <span>Back</span>
+      </button>
     </div>
   );
 };

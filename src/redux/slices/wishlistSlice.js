@@ -1,95 +1,87 @@
 /**
- * ============================================================
+ * =========================================================
  * File: wishlistSlice.js
- * Purpose: Redux slice for managing wishlist state
- * ============================================================
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Manage user's wishlist (favorites) state.
  *
- *  Description:
- * This slice handles the **wishlist functionality** of the app.
- * It allows users to add and remove products from their wishlist,
- * while also persisting data in `localStorage` for session durability.
+ * Responsibilities:
+ * - fetchWishlist: load wishlist from API
+ * - addToWishlist: add an item (updates auth meta optimistic)
+ * - removeFromWishlist: remove an item (updates auth meta optimistic)
  *
- *  Features:
- * - Load wishlist items from `localStorage` when app initializes.
- * - Add new products to wishlist (prevents duplicates).
- * - Remove products from wishlist.
- * - Persist changes to `localStorage` automatically.
- *
- *  State Structure:
- * [
- *   {
- *     id: number,       // Unique product ID
- *     title: string,    // Product title
- *     price: number,    // Product price
- *     image: string     // Product image URL
- *   },
- *   ...
- * ]
- *
- *  Exports:
- * - Actions: `addToWishlist`, `removeFromWishlist`
- * - Reducer: `wishlistSlice.reducer` (default export)
- *
- * ============================================================
+ * Notes:
+ * - When adding/removing, dispatches to authSlice to update navbar counts
+ * =========================================================
  */
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../config/api";
+import { incrementWishlistCount } from "./authSlice";
 
-/**
- *  Utility function:
- * Load wishlist from localStorage (if available).
- * Falls back to an empty array if nothing is stored.
- */
-const loadWishlistFromStorage = () => {
-  try {
-    const data = localStorage.getItem("wishlist");
-    return data ? JSON.parse(data) : [];
-  } catch (err) {
-    return []; // Fallback to empty array on error
+export const fetchWishlist = createAsyncThunk(
+  "wishlist/fetch",
+  async (_, { getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
+
+    const res = await api.get("/favorites");
+    return res.data;
   }
-};
+);
 
-/**
- *  Utility function:
- * Save updated wishlist state to localStorage.
- */
-const saveWishlistToStorage = (wishlist) => {
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-};
+export const addToWishlist = createAsyncThunk(
+  "wishlist/add",
+  async (productId, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
 
-//  Create wishlist slice
+    const res = await api.post("/favorites", { productId });
+    dispatch(incrementWishlistCount(1));
+    return res.data;
+  }
+);
+
+export const removeFromWishlist = createAsyncThunk(
+  "wishlist/remove",
+  async (productId, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
+
+    await api.delete(`/favorites/${productId}`);
+    dispatch(incrementWishlistCount(-1));
+    return productId;
+  }
+);
+
 const wishlistSlice = createSlice({
-  name: "wishlist", // Slice name used in Redux state
-  initialState: loadWishlistFromStorage(), // Load persisted wishlist items
-  reducers: {
-    /**
-     * ➕ Add a product to wishlist
-     * - Ensures no duplicates (checks by product ID).
-     * - Saves updated state to localStorage.
-     */
-    addToWishlist: (state, action) => {
-      const exists = state.some((item) => item.id === action.payload.id);
-      if (!exists) {
-        state.push(action.payload); // Add new product
-        saveWishlistToStorage(state); // Persist change
-      }
-    },
-
-    /**
-     * ➖ Remove a product from wishlist
-     * - Matches item by ID and removes it.
-     * - Returns updated wishlist and saves to localStorage.
-     */
-    removeFromWishlist: (state, action) => {
-      const updatedWishlist = state.filter((item) => item.id !== action.payload);
-      saveWishlistToStorage(updatedWishlist); // Persist change
-      return updatedWishlist; // Return new wishlist state
-    },
+  name: "wishlist",
+  initialState: { items: [], loading: false },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchWishlist.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchWishlist.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchWishlist.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(addToWishlist.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(removeFromWishlist.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          (item) => item.product._id !== action.payload
+        );
+      });
   },
 });
 
-//  Export actions for dispatching
-export const { addToWishlist, removeFromWishlist } = wishlistSlice.actions;
-
-//  Export reducer as default
 export default wishlistSlice.reducer;

@@ -1,3 +1,20 @@
+/**
+ * =========================================================
+ * File: index.css
+ * ---------------------------------------------------------
+ * Purpose:
+ * Global stylesheet entry point.
+ *
+ * Responsibilities:
+ * - Inject Tailwind base styles
+ * - Register reusable component styles
+ * - Enable utility-first styling
+ *
+ * Notes:
+ * - Tailwind processes this file at build time
+ * =========================================================
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

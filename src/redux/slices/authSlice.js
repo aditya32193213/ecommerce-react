@@ -1,62 +1,100 @@
 /**
- * ============================================================
+ * =========================================================
  * File: authSlice.js
- * Purpose: Redux slice for managing authentication state.
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Manage authentication state (login/logout) and user meta.
  *
- * Features:
- * - Persists authentication state (logged in/out, username) in localStorage.
- * - Provides `login` and `logout` reducers to update state and storage.
- * - Automatically loads saved authentication state on app initialization.
- * - Exports helper `loadAuthFromStorage` for testability and mocking.
+ * Responsibilities:
+ * - Load/save auth state to localStorage
+ * - Provide actions: login, logout, incrementCartCount, incrementWishlistCount
+ * - Async thunk to fetch user metadata (cartCount, wishlistCount)
  *
- * Benefits:
- * - Ensures user authentication persists across page reloads.
- * - Centralizes all authentication logic in one slice.
- * - Test-friendly by allowing localStorage mocking.
- * ============================================================
+ * Notes:
+ * - Keeps persisted auth in localStorage under key "auth"
+ * =========================================================
  */
 
-import { createSlice } from "@reduxjs/toolkit"; // Helper to simplify Redux state and actions
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../config/api.js";
 
-// 🔹 Utility function to load authentication state from localStorage
-// Exported separately for easier testing (mocking localStorage in unit tests)
+export const fetchUserMeta = createAsyncThunk(
+  "auth/fetchMeta",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get("/users/meta");
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const loadAuthFromStorage = () => {
   try {
-    const saved = localStorage.getItem("auth"); // Retrieve saved auth data
+    const saved = localStorage.getItem("auth");
     return saved
-      ? JSON.parse(saved) // Parse if exists
-      : { isAuthenticated: false, username: null }; // Default state if nothing is saved
+      ? JSON.parse(saved)
+      : {
+          isAuthenticated: false,
+          username: null,
+          isAdmin: false,
+          token: null,
+          meta: { cartCount: 0, wishlistCount: 0 },
+        };
   } catch {
-    // Fallback in case JSON.parse fails or localStorage is not available
-    return { isAuthenticated: false, username: null };
+    return {
+      isAuthenticated: false,
+      username: null,
+      isAdmin: false,
+      token: null,
+      meta: { cartCount: 0, wishlistCount: 0 },
+    };
   }
 };
 
-// Initialize state by loading from localStorage or using default
-const savedAuth = loadAuthFromStorage();
-
-// Create the authentication slice
 const authSlice = createSlice({
-  name: "auth",          // Slice name (used in Redux store)
-  initialState: savedAuth, // Initial state loaded from storage
+  name: "auth",
+  initialState: loadAuthFromStorage(),
   reducers: {
-    //  Reducer to log in a user
     login: (state, action) => {
-      state.isAuthenticated = true;                   // Set user as authenticated
-      state.username = action.payload.username;       // Save username in state
-      localStorage.setItem("auth", JSON.stringify(state)); // Persist to localStorage
+      state.isAuthenticated = true;
+      state.username = action.payload.username;
+      state.isAdmin = action.payload.isAdmin;
+      state.token = action.payload.token;
+      localStorage.setItem("auth", JSON.stringify(state));
     },
-    //  Reducer to log out a user
     logout: (state) => {
-      state.isAuthenticated = false;  // Reset authentication status
-      state.username = null;          // Clear username
-      localStorage.removeItem("auth"); // Remove saved auth from localStorage
+      state.isAuthenticated = false;
+      state.username = null;
+      state.isAdmin = false;
+      state.token = null;
+      state.meta = { cartCount: 0, wishlistCount: 0 };
+      localStorage.removeItem("auth");
     },
+
+    // 🔥 NEW: optimistic meta updates
+    incrementWishlistCount: (state, action) => {
+      state.meta.wishlistCount += action.payload;
+    },
+    incrementCartCount: (state, action) => {
+  state.meta.cartCount = Math.max(0, action.payload);
+  localStorage.setItem("auth", JSON.stringify(state));
+  },
+
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUserMeta.fulfilled, (state, action) => {
+      state.meta = action.payload;
+    });
   },
 });
 
-//  Export actions for use in components (dispatch login/logout)
-export const { login, logout } = authSlice.actions;
+export const {
+  login,
+  logout,
+  incrementWishlistCount,
+  incrementCartCount,
+} = authSlice.actions;
 
-//  Export reducer to be included in Redux store
 export default authSlice.reducer;

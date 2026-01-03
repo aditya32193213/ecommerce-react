@@ -1,20 +1,18 @@
 /**
- * ============================================================
+ * =========================================================
  * File: store.js
- * Purpose: Central Redux store configuration for the application.
- * 
- * Features:
- * - Combines all Redux slices (cart, wishlist, search, auth) into one store.
- * - Supports `preloadedState` for easier testing and SSR (Server-Side Rendering).
- * - Exports both:
- *   1. `createStore`: A factory function to create a new store instance.
- *   2. `store`: A default store used by the real application.
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Configure and export the Redux store used by the app.
  *
- * Benefits:
- * - Keeps state management centralized and organized.
- * - Easily testable by injecting custom initial states.
- * - Ensures app-wide consistency through a single source of truth.
- * ============================================================
+ * Responsibilities:
+ * - Compose feature reducers (cart, wishlist, search, auth, orders, ui, products)
+ * - Provide a factory (`createStore`) to produce a store (useful for tests)
+ * - Export a default store instance for the app's <Provider />
+ *
+ * Notes:
+ * - Uses Redux Toolkit's configureStore for sensible defaults.
+ * =========================================================
  */
 
 import { configureStore } from "@reduxjs/toolkit"; // Redux Toolkit helper for store configuration
@@ -22,6 +20,9 @@ import cartReducer from "./slices/cartSlice";     // Cart state management slice
 import wishlistReducer from "./slices/wishlistSlice"; // Wishlist state management slice
 import searchReducer from "./slices/searchSlice";     // Search state management slice
 import authReducer from "./slices/authSlice";         // Authentication state management slice
+import orderReducer from "./slices/orderSlice";
+import uiReducer from "./slices/uiSlice";
+import productReducer from "./slices/productSlice"
 
 // 🔹 Factory function to create a store instance
 // Accepts an optional `preloadedState` (useful for testing or SSR)
@@ -32,6 +33,9 @@ export const createStore = (preloadedState = {}) =>
       wishlist: wishlistReducer, // Handles wishlist-related state and actions
       search: searchReducer,     // Handles search/filter state
       auth: authReducer,         // Handles authentication (login/logout) state
+      orders: orderReducer,
+      ui: uiReducer,
+      products: productReducer,
     },
     preloadedState, // Allows custom initial state injection
   });

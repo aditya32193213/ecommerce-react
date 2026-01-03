@@ -1,101 +1,117 @@
 /**
- * ============================================================
+ * =========================================================
  * File: cartSlice.js
- * Purpose: Redux slice for managing shopping cart state.
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Manage shopping cart state and async interactions.
  *
- * Features:
- * - Persists cart items in localStorage for session persistence.
- * - Supports adding, removing, increasing, and decreasing item quantities.
- * - Provides a clearCart action to reset the cart.
- * - Automatically loads cart data from localStorage on initialization.
+ * Responsibilities:
+ * - Provide thunks to fetch/add/update/remove cart items (API)
+ * - Keep cart items in state
+ * - Inform authSlice about cart count changes (for navbar)
  *
- * Benefits:
- * - Ensures cart data is not lost on page reload.
- * - Simplifies cart logic by centralizing state in Redux.
- * - Easy to extend (e.g., add coupons, discounts, inventory checks).
- * ============================================================
+ * Notes:
+ * - Uses optimistic count updates by dispatching incrementCartCount
+ * - clearCart reducer is provided for client-side clearing (no API)
+ * =========================================================
  */
 
-import { createSlice } from "@reduxjs/toolkit"; // Simplifies Redux state and actions
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../config/api";
+import { incrementCartCount } from "./authSlice";
 
-//  Load cart data from localStorage
-// Exported for easier testing (mocking localStorage in unit tests)
-export const loadCartFromStorage = () => {
-  try {
-    const data = localStorage.getItem("cart"); // Retrieve saved cart
-    return data ? JSON.parse(data) : [];       // Parse if exists, else return empty array
-  } catch {
-    return []; // Fallback if localStorage is unavailable
+// -------------------- THUNKS --------------------
+
+export const fetchCart = createAsyncThunk(
+  "cart/fetch",
+  async (_, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
+
+    const res = await api.get("/cart");
+
+    const totalQty = res.data.reduce((sum, item) => sum + item.qty, 0);
+    dispatch(incrementCartCount(totalQty));
+
+    return res.data;
   }
-};
+);
 
-//  Save cart data to localStorage
-export const saveCartToStorage = (cart) => {
-  localStorage.setItem("cart", JSON.stringify(cart)); // Persist cart state
-};
+export const addToCart = createAsyncThunk(
+  "cart/add",
+  async ({ productId, qty }, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
 
-//  Create cart slice
+    const res = await api.post("/cart", { productId, qty });
+
+    const totalQty = res.data.reduce((sum, item) => sum + item.qty, 0);
+    dispatch(incrementCartCount(totalQty));
+
+    return res.data;
+  }
+);
+
+export const updateCartQty = createAsyncThunk(
+  "cart/update",
+  async ({ productId, qty }, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
+
+    const res = await api.put(`/cart/${productId}`, { qty });
+
+    const totalQty = res.data.reduce((sum, item) => sum + item.qty, 0);
+    dispatch(incrementCartCount(totalQty));
+
+    return res.data;
+  }
+);
+
+export const removeCartItem = createAsyncThunk(
+  "cart/remove",
+  async (productId, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.isAuthenticated) {
+      return rejectWithValue("NOT_AUTHENTICATED");
+    }
+
+    const res = await api.delete(`/cart/${productId}`);
+
+    const totalQty = res.data.reduce((sum, item) => sum + item.qty, 0);
+    dispatch(incrementCartCount(totalQty));
+
+    return res.data;
+  }
+);
+
+// -------------------- SLICE --------------------
+
 const cartSlice = createSlice({
-  name: "cart",                          // Slice name (used in Redux store)
-  initialState: loadCartFromStorage(),   // Load saved cart or default empty cart
+  name: "cart",
+  initialState: { items: [] },
   reducers: {
-    //  Add product to cart
-    addToCart: (state, action) => {
-      const product = action.payload;                         // Product being added
-      const existing = state.find((item) => item.id === product.id); // Check if product already exists
-
-      if (existing) {
-        // If product exists, increase its quantity
-        existing.quantity += product.quantity || 1;
-      } else {
-        // If not, add as new product with default quantity 1
-        state.push({ ...product, quantity: product.quantity || 1 });
-      }
-
-      saveCartToStorage(state); // Persist updated cart
+    clearCart: (state) => {
+      state.items = [];
     },
-
-    //  Remove product from cart by ID
-    removeFromCart: (state, action) => {
-      const updatedCart = state.filter((item) => item.id !== action.payload);
-      saveCartToStorage(updatedCart); // Persist updated cart
-      return updatedCart;             // Return new state
-    },
-
-    //  Increase quantity of product by ID
-    increaseQty: (state, action) => {
-      const item = state.find((item) => item.id === action.payload);
-      if (item) {
-        item.quantity += 1;           // Increment quantity
-        saveCartToStorage(state);     // Persist updated cart
-      }
-    },
-
-    //  Decrease quantity of product by ID
-    decreaseQty: (state, action) => {
-      const item = state.find((item) => item.id === action.payload);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;           // Decrement quantity (min = 1)
-      }
-      saveCartToStorage(state);       // Always persist state
-    },
-
-    //  Clear the entire cart
-    clearCart: () => {
-      localStorage.removeItem("cart"); // Remove saved cart
-      return [];                       // Reset state to empty array
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCart.fulfilled, (state, action) => {
+        state.items = action.payload;
+      })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.items = action.payload;
+      })
+      .addCase(updateCartQty.fulfilled, (state, action) => {
+        state.items = action.payload;
+      })
+      .addCase(removeCartItem.fulfilled, (state, action) => {
+        state.items = action.payload;
+      });
   },
 });
 
-//  Export actions for use in components (dispatch add/remove/increase/decrease/clear)
-export const {
-  addToCart,
-  removeFromCart,
-  increaseQty,
-  decreaseQty,
-  clearCart,
-} = cartSlice.actions;
-
-//  Export reducer to be included in Redux store
+export const { clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

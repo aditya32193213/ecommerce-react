@@ -1,31 +1,17 @@
 /**
- * ============================================================
+ * =========================================================
  * File: searchSlice.js
- * Purpose: Redux slice for handling search query state
- * ============================================================
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Hold the current search query and provide simple actions.
  *
- *  Description:
- * This slice manages the **search input value** across the app.
- * It ensures consistency of the query state for features like
- * product search, filtering, and auto-suggestions.
+ * Responsibilities:
+ * - setSearchQuery: update query (trimmed)
+ * - clearSearchQuery: reset query to empty string
  *
- *  Features:
- * - Store and update the search query string.
- * - Automatically trims unnecessary whitespace from input.
- * - Clear the search query when needed.
- * - Export initial state for easy testing.
- *
- *  State Structure:
- * {
- *   query: string   // Current search query entered by the user
- * }
- *
- *  Exports:
- * - Actions: `setSearchQuery`, `clearSearchQuery`
- * - Reducer: `searchSlice.reducer` (default export)
- * - State: `initialState` (for unit testing convenience)
- *
- * ============================================================
+ * Notes:
+ * - Kept intentionally lightweight; UI components use this slice to read/write the query
+ * =========================================================
  */
 
 import { createSlice } from "@reduxjs/toolkit";

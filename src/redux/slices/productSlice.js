@@ -1,68 +1,67 @@
 /**
- * ============================================================
+ * =========================================================
  * File: productSlice.js
- * Purpose: Redux slice for handling single product data fetching
- * ============================================================
+ * ---------------------------------------------------------
+ * Purpose:
+ * - Fetch and manage products for Home/Shop and ProductDetails.
  *
- * Description:
- * This slice manages the **state of a single product** in the store,
- * including fetching data from an external API (Fake Store API).
- * It handles loading, success, and error states using `createAsyncThunk`
- * and stores the product details for use in the UI.
+ * Responsibilities:
+ * - fetchProducts: load product list for listings/grids
+ * - fetchProductById: load a single product's details
+ * - clearProduct reducer to reset product details
  *
- *   Features:
- * - Fetch product by ID using `fetchProductById` async thunk.
- * - Store product details, loading state, and error messages.
- * - Clear product details when navigating away or resetting.
- * - Handles API errors gracefully with `rejectWithValue`.
- *
- *  State Structure:
- * {
- *   product: null | object,   // Holds single product details
- *   loading: boolean,         // Tracks API call in progress
- *   error: null | string      // Stores error message if fetch fails
- * }
- *
- *  Exports:
- * - Thunks: `fetchProductById`
- * - Reducers: `clearProduct`
- * - Default: `productSlice.reducer`
- *
- * ============================================================
+ * Notes:
+ * - fetchProducts requests /products?limit=100 by default
+ * =========================================================
  */
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import api from "../../config/api";
 
-//  Async thunk to fetch a single product by ID
-export const fetchProductById = createAsyncThunk(
-  "product/fetchById", // Action type string
-  async (id, { rejectWithValue }) => {
+// ------------------------------------------------------------------
+// 1. FETCH ALL PRODUCTS (New - For Home & Shop Pages)
+// ------------------------------------------------------------------
+export const fetchProducts = createAsyncThunk(
+  "products/fetchAll",
+  async (_, { rejectWithValue }) => {
     try {
-      // Attempt to fetch a single product from the Fake Store API
-      const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-
-      // If response is not OK, throw error
-      if (!response.ok) {
-        throw new Error("Failed to fetch product");
-      }
-
-      // Parse JSON response
-      const data = await response.json();
-      return data; // Fulfilled payload
+      // Fetch products (default limit 100 to populate the grid)
+      const response = await api.get("/products?limit=100");
+      
+      // Backend returns { products: [...], page, pages }
+      // We safely extract the array, or use the data directly if it is an array
+      return response.data.products || response.data;
     } catch (error) {
-      // If an error occurs, pass it to rejected state
-      return rejectWithValue(error.message || "An error occurred");
+      return rejectWithValue(error.response?.data?.message || "Failed to load products");
     }
   }
 );
 
-//  Slice definition
+// ------------------------------------------------------------------
+// 2. FETCH SINGLE PRODUCT (Existing - For Product Details Page)
+// ------------------------------------------------------------------
+export const fetchProductById = createAsyncThunk(
+  "product/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/products/${id}`);
+      return response.data; 
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch product");
+    }
+  }
+);
+
+// ------------------------------------------------------------------
+// SLICE DEFINITION
+// ------------------------------------------------------------------
 const productSlice = createSlice({
-  name: "product", // Slice name
+  name: "products", 
   initialState: {
-    product: null,   // Initially no product is loaded
-    loading: false,  // No API call in progress initially
-    error: null,     // No error initially
+    items: [],       // ✅ List of products (Home/Shop)
+    product: null,   // ✅ Single product details (ProductDetails)
+    loading: false,  // Loading state
+    error: null,     // Error state
   },
   reducers: {
     // Clear product state manually (e.g., on unmount or navigation)
@@ -74,26 +73,35 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //  When fetchProductById is pending → set loading true
+      // --- Case 1: Fetch ALL Products ---
+      .addCase(fetchProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload; // Store list here
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // --- Case 2: Fetch SINGLE Product ---
       .addCase(fetchProductById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      //  When fetchProductById succeeds → store product in state
       .addCase(fetchProductById.fulfilled, (state, action) => {
         state.loading = false;
-        state.product = action.payload;
+        state.product = action.payload; // Store details here
       })
-      //  When fetchProductById fails → capture error message
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to load product";
+        state.error = action.payload;
       });
   },
 });
 
-//  Export actions
 export const { clearProduct } = productSlice.actions;
-
-//  Export reducer (default export)
 export default productSlice.reducer;

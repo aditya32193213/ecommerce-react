@@ -1,104 +1,230 @@
 /**
- * ============================================================
+ * =========================================================
  * File: routes.js
- * Purpose: Centralized configuration for application routes
- * ============================================================
+ * ---------------------------------------------------------
+ * Purpose:
+ * Centralized routing configuration for the application.
  *
  * Responsibilities:
- * - Define all application routes in a single place
- * - Associate each route with:
- *    - `name` → Human-readable identifier
- *    - `path` → URL pattern
- *    - `element` → Component to render
- *    - `isProtected` → Whether the route requires authentication
- * - Provide a fallback "Not Found" route for invalid URLs
+ * - Define public, protected, and admin routes
+ * - Configure lazy loading for performance optimization
+ * - Provide metadata for route guards
  *
- * ============================================================
+ * Notes:
+ * - Used by App.jsx for recursive route rendering
+ * - Admin routes support nested child routes
+ * =========================================================
  */
 
-// --- PAGE IMPORTS ---
-import Home from "./pages/Home";
-import ProductDetails from "./pages/ProductDetails";
-import Cart from "./pages/Cart";
-import Wishlist from "./pages/Wishlist";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Checkout from "./pages/Checkout";
-import ThankYou from "./pages/Thankyou";
 
-/**
- * ============================================================
- *  ROUTE DEFINITIONS
- * ============================================================
- * Each object defines a single route:
- *  - `name`: descriptive label
- *  - `path`: route path
- *  - `element`: component to render
- *  - `isProtected`: authentication requirement
- */
+import { Suspense, lazy } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
+
+// Eager Load (Critical Pages for SEO/Speed)
+import Home from "./pages/user/Home";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import Shop from "./pages/user/Shop";
+
+// ✅ LAZY LOAD (Heavy Pages & Stripe)
+const ProductDetails = lazy(() => import("./pages/user/ProductDetails"));
+const Cart = lazy(() => import("./pages/user/Cart"));
+const Wishlist = lazy(() => import("./pages/user/Wishlist"));
+const Dashboard = lazy(() => import("./pages/user/Dashboard"));
+const Checkout = lazy(() => import("./pages/user/Checkout"));
+const ThankYou = lazy(() => import("./pages/user/Thankyou"));
+const OrderHistory = lazy(() => import("./pages/user/OrderHistory"));
+const OrderDetails = lazy(() => import("./pages/user/OrderDetails"));
+const Profile = lazy(() => import("./pages/user/Profile"));
+const Payment = lazy(() => import("./pages/user/Payment"));
+
+const ProductList = lazy(() => import("./pages/admin/ProductList"));
+const ProductEdit = lazy(() => import("./pages/admin/ProductEdit"));
+const OrderList = lazy(() => import("./pages/admin/OrderList"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const UserList = lazy(() => import("./pages/admin/UserList"));
+const AdminOrderDetails = lazy(() => import("./pages/admin/OrderDetails"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Loading Fallback
+const Loading = () => (
+  <div className="flex justify-center items-center h-96">
+    <ClipLoader size={50} color="#2563EB" />
+  </div>
+);
+
 const routes = [
-  {
-    name: "Home",
-    path: "/",
-    element: <Home data-testid="home-page" />,
-    isProtected: false,
-  },
+  // ===== USER PAGES (ADMIN BLOCKED, GUEST ALLOWED) =====
+  { name: "Home", path: "/", element: <Home />, isProtected: true },
+  { name: "Shop", path: "/shop", element: <Shop />, isProtected: true },
+
   {
     name: "Product Details",
     path: "/product/:id",
-    element: <ProductDetails data-testid="product-details-page" />,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ProductDetails />
+      </Suspense>
+    ),
+    isProtected: true,
+  },
+
+  // ===== AUTH (PUBLIC) =====
+  { name: "Login", path: "/login", element: <Login />, isProtected: false },
+  { name: "Signup", path: "/signup", element: <Signup />, isProtected: false },
+
+  {
+    name: "Forgot Password",
+    path: "/forgot-password",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ForgotPassword />
+      </Suspense>
+    ),
     isProtected: false,
   },
   {
+    name: "Reset Password",
+    path: "/reset-password/:token",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ResetPassword />
+      </Suspense>
+    ),
+    isProtected: false,
+  },
+
+  // ===== AUTHENTICATED USER ONLY =====
+  {
     name: "Cart",
     path: "/cart",
-    element: <Cart data-testid="cart-page" />,
-    isProtected: false,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Cart />
+      </Suspense>
+    ),
+    isProtected: true,
   },
   {
     name: "Wishlist",
     path: "/wishlist",
-    element: <Wishlist data-testid="wishlist-page" />,
-    isProtected: false,
-  },
-  {
-    name: "Login",
-    path: "/login",
-    element: <Login data-testid="login-page" />,
-    isProtected: false,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Wishlist />
+      </Suspense>
+    ),
+    isProtected: true,
   },
   {
     name: "Checkout",
     path: "/checkout",
-    element: <Checkout data-testid="checkout-page" />,
-    isProtected: false,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Checkout />
+      </Suspense>
+    ),
+    isProtected: true,
   },
   {
-    name: "Thank You",
-    path: "/thank-you",
-    element: <ThankYou data-testid="thankyou-page" />,
-    isProtected: false,
+    name: "Payment",
+    path: "/payment",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Payment />
+      </Suspense>
+    ),
+    isProtected: true,
   },
   {
     name: "Dashboard",
     path: "/dashboard",
-    element: <Dashboard data-testid="dashboard-page" />,
-    isProtected: true, //  requires authentication
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Dashboard />
+      </Suspense>
+    ),
+    isProtected: true,
   },
+  {
+    name: "Orders",
+    path: "/orders",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <OrderHistory />
+      </Suspense>
+    ),
+    isProtected: true,
+  },
+  {
+    name: "Order Details",
+    path: "/orders/:id",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <OrderDetails />
+      </Suspense>
+    ),
+    isProtected: true,
+  },
+  {
+    name: "Profile",
+    path: "/profile",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Profile />
+      </Suspense>
+    ),
+    isProtected: true,
+  },
+  {
+    name: "Thank You",
+    path: "/thankyou",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ThankYou />
+      </Suspense>
+    ),
+    isProtected: true,
+  },
+
+  // ===== ADMIN ROUTES =====
+  {
+    path: "/admin",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <AdminLayout />
+      </Suspense>
+    ),
+    isProtected: true,
+    isAdmin: true,
+    children: [
+      { path: "dashboard", element: <AdminDashboard /> },
+      { path: "products", element: <ProductList /> },
+      { path: "product/:id/edit", element: <ProductEdit /> },
+      { path: "orders", element: <OrderList /> },
+      { path: "orders/:id", element: <AdminOrderDetails /> },
+      { path: "users", element: <UserList /> },
+    ],
+  },
+
+  // ===== 404 =====
   {
     name: "Not Found",
     path: "*",
     element: (
-      <div
-        className="text-center mt-10 text-red-500 text-xl font-semibold"
-        data-testid="not-found"
-      >
-        🚫 Page Not Found
-      </div>
+      <Suspense fallback={<Loading />}>
+        <NotFound />
+      </Suspense>
     ),
     isProtected: false,
   },
 ];
 
-// --- EXPORT ROUTES ---
 export default routes;
+
+
+
+
+
