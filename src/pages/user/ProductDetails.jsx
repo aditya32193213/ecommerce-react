@@ -48,7 +48,7 @@ const ProductDetails = () => {
   // Get Cart items to check if product is already added
   const { items: cartItems } = useSelector((state) => state.cart);
   const { isAuthenticated }= useSelector((state) => state.auth);
-  const isInCart = cartItems.some((item) => item.product?._id === id);
+  const isInCart = Array.isArray(cartItems)? cartItems.some((item) => item.product?._id === id): false;
 
   useEffect(() => {
     const fetchProduct = async () => {

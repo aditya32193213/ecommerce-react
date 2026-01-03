@@ -20,7 +20,7 @@
 import axios from "axios";
 
 // Backend base URL
-const API_BASE = process.env.REACT_APP_API_URL;
+const API_BASE =   process.env.REACT_APP_API_URL || "https://ecommerce-backend-hen7.onrender.com/api";
 
 // Axios instance
 const api = axios.create({
