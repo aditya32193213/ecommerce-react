@@ -18,7 +18,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export default function UserRoute() {
+export default function UserRoute({ fallback = null }) {
   const { isAuthenticated, isAdmin, loading } = useSelector((state) => state.auth);
 
   // ⏳ Auth still resolving
