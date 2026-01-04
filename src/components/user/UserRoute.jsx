@@ -19,7 +19,12 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function UserRoute() {
-  const { isAuthenticated, isAdmin } = useSelector((state) => state.auth);
+  const { isAuthenticated, isAdmin, loading } = useSelector((state) => state.auth);
+
+  // ⏳ Auth still resolving
+  if (loading) {
+    return fallback;
+  }
 
   // 🚫 Admin trying to access user pages
   if (isAuthenticated && isAdmin) {

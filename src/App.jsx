@@ -21,7 +21,7 @@
  */
 
 import { useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, Outlet } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { ToastContainer } from "react-toastify";
@@ -30,6 +30,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Banner from "./components/home/Banner";
+import GlobalLoader from "../src/components/common/GlobalLoader"
 
 import routes from "./routes";
 import AdminRoute from "./components/admin/AdminRoute";
@@ -56,7 +57,14 @@ const renderRoutes = (routes) =>
       // ================= USER PROTECTED ROUTES =================
       if (isProtected) {
         return (
-          <Route key={index} element={<UserRoute />}>
+          <Route
+            key={index}
+            element={
+              <UserRoute fallback={<GlobalLoader />}>
+                <Outlet />
+              </UserRoute>
+            }
+          >
             <Route path={path} element={element} />
           </Route>
         );
